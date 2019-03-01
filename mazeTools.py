@@ -1,13 +1,4 @@
 from random import randint
-import tkinter as tk
-
-#******************
-mapSize = int(input("Grid Size: "))
-cellSize =int( input("Pixel size of each square (try like 20):")) #number of pixels for each line that makes up a square
-
-
-#************
-
 
 
 class Cell:
@@ -73,11 +64,14 @@ class Map:
         return self.cells[r][c]
 
 
-    def checkUnvisited(self):
+    def getUnvisited(self):
+        unvisited = []
         for i in self.cells:
             for j in i:
                 if j.visited == False:
-                    return True
+                    unvisited.append(j)
+
+        return unvisited
         return False
 
     def breakWall(self, cell1, cell2):
@@ -116,67 +110,27 @@ class Map:
 
         current = self.getCell(row,col)
         stack = []
+        unvisited = len(self.getUnvisited())
 
-        while self.checkUnvisited():
+        while unvisited > 0:
 
             neighbors = current.getNeighbors()
             neighbors = self.elimNeighbors(neighbors)
 
             if len(neighbors) == 0:
-                current.visited = True
+                if current.visited == False:
+                    current.visited = True
+                    unvisited -= 1
                 current = stack.pop()
                 continue
 
             newPos = neighbors[randint(0, len(neighbors) - 1)]
+            #newPos = neighbors[0]
             next = self.getCell(newPos[0], newPos[1])
 
             self.breakWall(current, next)
             stack.append(current)
-            current.visited = True
+            if current.visited == False:
+                current.visited = True
+                unvisited-=1
             current = next
-
-
-def drawMaze(map,w, root, cellSize):
-    xCounter =cellSize
-    yCounter =cellSize
-
-    for i in map.cells:
-        for j in i:
-
-            sides = j.sides
-            top = sides[0]
-            right = sides[1]
-            bottom = sides[2]
-            left = sides[3]
-
-            if top:
-                w.create_line(xCounter, yCounter, xCounter + cellSize, yCounter)
-            if right:
-                w.create_line(xCounter+cellSize, yCounter, xCounter+cellSize, yCounter+cellSize )
-            if bottom:
-                w.create_line(xCounter, yCounter+cellSize, xCounter + cellSize, yCounter+cellSize)
-            if left:
-                w.create_line(xCounter, yCounter, xCounter, yCounter+cellSize)
-
-            xCounter += cellSize
-
-        xCounter = cellSize
-        yCounter +=cellSize
-
-
-
-
-
-map = Map(mapSize)
-map.makeMaze()
-root=tk.Tk()
-w = tk.Canvas(root,width=((map.size + 1)* cellSize ), height=((map.size + 1) *cellSize  ))
-w.pack()
-drawMaze(map, w, root, cellSize)
-for i in map.cells:
-    for j in i:
-        print(str(j.sides))
-
-    print("\n")
-tk.mainloop()
-
