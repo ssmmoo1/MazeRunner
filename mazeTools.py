@@ -134,3 +134,42 @@ class Map:
                 current.visited = True
                 unvisited-=1
             current = next
+
+
+    def convertTable(self):
+
+        table = []
+
+        for x in range(self.size * 3):
+            tempR = [0] * (self.size * 3)
+            table.append(tempR)
+
+
+
+        tabR = 1
+        tabC = 1
+
+        for r in self.cells:
+
+            for c in r:
+                table[tabR-1][tabC] =c.sides[0]
+                table[tabR +1][tabC] =c.sides[2]
+                table[tabR][tabC - 1] =c.sides[3]
+                table[tabR][tabC + 1] = c.sides[1]
+
+                table[tabR+1][tabC+1] = 1
+                table[tabR - 1][tabC - 1] = 1
+                table[tabR - 1][tabC + 1] = 1
+                table[tabR + 1][tabC - 1] = 1
+
+
+                tabC+=3
+
+            tabR+=3
+            tabC = 1
+
+        for r in table:
+            print(r)
+            print("\n")
+
+        return table

@@ -31,6 +31,7 @@ player = movingObjects.Player(10,"graphics/DinoPlayer.png", screenSize/2, screen
 map = mazeTools.Map(mapSize)
 map.makeMaze()
 
+
 currentR = randint(0, mapSize - 1)
 currentC = randint(0, mapSize - 1)
 
